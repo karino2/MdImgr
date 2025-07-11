@@ -3,11 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 const iniDir = "/Users/arinokazuma/work/GitHub/MdImgr/tests"
@@ -25,6 +29,11 @@ func (t *TargetDir) ReadFile(fname string) ([]byte, error) {
 	return os.ReadFile(requestedPath)
 }
 
+func hasImageExt(fname string) bool {
+	// only support png for a while.
+	return filepath.Ext(fname) == ".png"
+}
+
 /*
 List image files.
 */
@@ -39,13 +48,58 @@ func (t *TargetDir) ListFiles() []string {
 	}
 	for _, file := range files {
 		if !file.IsDir() {
-			// only support png for a while.
-			if filepath.Ext(file.Name()) == ".png" {
+			if hasImageExt(file.Name()) {
 				result = append(result, file.Name())
 			}
 		}
 	}
 	return result
+}
+
+func (t *TargetDir) DropFile(srcPath string) error {
+	now := time.Now()
+
+	fname := now.Format("2006_0102_150405") + ".png"
+
+	destPath := filepath.Join(t.targetDir, fname)
+
+	srcFile, err := os.Open(srcPath)
+	if err != nil {
+		return fmt.Errorf("failed to create src file: %s, %w", srcPath, err)
+	}
+
+	defer srcFile.Close()
+
+	destFile, err := os.Create(destPath)
+	if err != nil {
+		return fmt.Errorf("failed to create dest file: %s, %w", destPath, err)
+	}
+
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, srcFile)
+	if err != nil {
+		return fmt.Errorf("failed to copy file: %w", err)
+	}
+	return nil
+}
+
+func (t *TargetDir) RegisterFileDropListener(ctx context.Context) {
+	println("register!")
+	runtime.OnFileDrop(ctx, func(x, y int, paths []string) {
+		println("ondrop!")
+		for _, p := range paths {
+			if hasImageExt(p) {
+				err := t.DropFile(p)
+				if err != nil {
+					println("DropFile Error:", err)
+					return
+				}
+				// notify update.
+			}
+		}
+		runtime.EventsEmit(ctx, "image-list-update")
+	})
 }
 
 type TargetDirLoader struct {
@@ -84,6 +138,7 @@ func NewApp(td *TargetDir) *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	a.targetDir.RegisterFileDropListener(ctx)
 }
 
 func (a *App) ListFiles() []string {

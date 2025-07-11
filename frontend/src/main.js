@@ -13,7 +13,7 @@ function buildHtml(files) {
         build.push(`<img src="${f}" class="img-target">`)
         build.push(`</div>`)
         build.push(`<div class="button-area">`)
-        build.push(`<button>copy</button>`)
+        build.push(`<button>url</button>`)
         build.push(`<button>delete</button>`)
         build.push("</div>")
         build.push("</div>")
@@ -21,12 +21,15 @@ function buildHtml(files) {
     return build.join("\n")
 }
 
-async function start() {
-    let imgList = document.getElementById('img-list')
-
+let imgListDiv = document.getElementById('img-list')
+async function updateImageList() {
     let files = await ListFiles()
-    imgList.innerHTML = buildHtml(files)
+    imgListDiv.innerHTML = buildHtml(files)
 }
 
-start()
+runtime.EventsOn("image-list-update", async () => {
+    await updateImageList()
+})
+
+updateImageList()
 
