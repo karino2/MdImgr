@@ -1,0 +1,55 @@
+html {
+    background-color: rgba(27, 38, 54, 1);
+    text-align: center;
+    color: white;
+}
+
+body {
+    margin: 0;
+    color: white;
+    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+}
+
+@font-face {
+    font-family: "Nunito";
+    font-style: normal;
+    font-weight: 400;
+    src: local(""),
+    url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
+}
+
+#img-list {
+    text-align: center;
+}
+
+.img-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px; /* 画像エリアとボタンエリアの間にスペースを開ける */
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 20px auto; /* 中央寄せ */
+}
+
+.img-area {
+    flex-shrink: 0; /* 画像エリアが縮まないようにする */
+}
+
+.button-area {
+    display: flex;
+    flex-direction: column; /* 子要素（ボタン）を縦方向に並べる */
+    gap: 10px;           /* ボタン同士の間にスペースを開ける */
+    justify-content: flex-start; /* 縦方向の配置（上揃え） */
+}
+
+.img-target {
+    width: 100px;
+    height: 100px;
+}
+
+#img-add {
+    height: 200px;
+    border: 1px solid #ccc;
+}
