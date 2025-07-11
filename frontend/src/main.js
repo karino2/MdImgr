@@ -1,5 +1,5 @@
 import './style.css';
-import {ListFiles} from '../wailsjs/go/main/App';
+import {ListFiles, CopyUrl} from '../wailsjs/go/main/App';
 
 /**
  * 
@@ -13,7 +13,7 @@ function buildHtml(files) {
         build.push(`<img src="${f}" class="img-target">`)
         build.push(`</div>`)
         build.push(`<div class="button-area">`)
-        build.push(`<button>url</button>`)
+        build.push(`<button onclick="copyUrl('${f}')">url</button>`)
         build.push(`<button>delete</button>`)
         build.push("</div>")
         build.push("</div>")
@@ -25,6 +25,10 @@ let imgListDiv = document.getElementById('img-list')
 async function updateImageList() {
     let files = await ListFiles()
     imgListDiv.innerHTML = buildHtml(files)
+}
+
+window.copyUrl = (fname) => {
+    CopyUrl(fname)
 }
 
 runtime.EventsOn("image-list-update", async () => {

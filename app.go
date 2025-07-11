@@ -15,6 +15,7 @@ import (
 )
 
 const iniDir = "/Users/arinokazuma/work/GitHub/MdImgr/tests"
+const template = `![images/WeightMedianFilter/$1]({{"/assets/images/WeightMedianFilter/$1" | absolute_url}})`
 
 type TargetDir struct {
 	targetDir string
@@ -143,4 +144,9 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) ListFiles() []string {
 	return a.targetDir.ListFiles()
+}
+
+func (a *App) CopyUrl(fname string) {
+	txt := strings.ReplaceAll(template, "$1", fname)
+	runtime.ClipboardSetText(a.ctx, txt)
 }
