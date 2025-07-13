@@ -1,5 +1,7 @@
 import './style.css';
 import {ListFiles, CopyUrl, SaveImage} from '../wailsjs/go/main/App';
+import Toastify from 'toastify-js';
+import 'toastify-js/src/toastify.css';
 
 /**
  * 
@@ -35,6 +37,18 @@ runtime.EventsOn("image-list-update", async () => {
     await updateImageList()
 })
 
+function showToast(msg) {
+    Toastify({
+        text: msg
+    }).showToast()
+}
+
+runtime.EventsOn("show-toast", (msg) => {
+    showToast(msg)
+})
+
+
+
 document.addEventListener('paste', async (event) => {
     console.log("paste called")
     const clipboardData = event.clipboardData || window.clipboardData;
@@ -52,6 +66,7 @@ document.addEventListener('paste', async (event) => {
                 reader.onload = async (e) => {
                     const imageDataUrl = e.target.result
                     await SaveImage(imageDataUrl)
+                    showToast("Url copied")
                 };
                 reader.readAsDataURL(blob)
             }

@@ -176,6 +176,8 @@ func (a *App) startup(ctx context.Context) {
 		a.NotifyUpdateImageList()
 		if last != "" {
 			a.CopyUrl(last)
+			runtime.EventsEmit(a.ctx, "show-toast", "Url copied.")
+
 		}
 	})
 }
