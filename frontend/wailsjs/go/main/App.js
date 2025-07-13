@@ -9,3 +9,7 @@ export function CopyUrl(arg1) {
 export function ListFiles() {
   return window['go']['main']['App']['ListFiles']();
 }
+
+export function SaveImage(arg1) {
+  return window['go']['main']['App']['SaveImage'](arg1);
+}

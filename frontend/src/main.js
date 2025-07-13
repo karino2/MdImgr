@@ -1,5 +1,5 @@
 import './style.css';
-import {ListFiles, CopyUrl} from '../wailsjs/go/main/App';
+import {ListFiles, CopyUrl, SaveImage} from '../wailsjs/go/main/App';
 
 /**
  * 
@@ -34,6 +34,32 @@ window.copyUrl = (fname) => {
 runtime.EventsOn("image-list-update", async () => {
     await updateImageList()
 })
+
+document.addEventListener('paste', async (event) => {
+    console.log("paste called")
+    const clipboardData = event.clipboardData || window.clipboardData;
+
+    if (!clipboardData) {
+        return;
+    }
+
+    for (const item of clipboardData.items) {
+        if (item.type.indexOf('image') === 0) {
+            const blob = item.getAsFile();
+
+            if (blob) {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const imageDataUrl = e.target.result
+                    await SaveImage(imageDataUrl)
+                };
+                reader.readAsDataURL(blob)
+            }
+        }
+    }
+});
+
+
 
 updateImageList()
 

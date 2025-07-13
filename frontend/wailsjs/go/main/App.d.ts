@@ -4,3 +4,5 @@
 export function CopyUrl(arg1:string):Promise<void>;
 
 export function ListFiles():Promise<Array<string>>;
+
+export function SaveImage(arg1:string):Promise<void>;
