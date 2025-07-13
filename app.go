@@ -15,8 +15,9 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-const iniDir = "/Users/arinokazuma/work/GitHub/MdImgr/tests"
-const template = `![images/WeightMedianFilter/$1]({{"/assets/images/WeightMedianFilter/$1" | absolute_url}})`
+// const iniDir = "/Users/arinokazuma/work/GitHub/MdImgr/tests"
+const iniDir = "/Users/arinokazuma/work/GitHub/karino2.github.io/assets/images/MLAA"
+const template = `![images/MLAA/$1]({{"/assets/images/MLAA/$1" | absolute_url}})`
 
 type TargetDir struct {
 	targetDir string
