@@ -10,6 +10,10 @@ export function ListFiles() {
   return window['go']['main']['App']['ListFiles']();
 }
 
+export function NotifyUpdateImageList() {
+  return window['go']['main']['App']['NotifyUpdateImageList']();
+}
+
 export function SaveImage(arg1) {
   return window['go']['main']['App']['SaveImage'](arg1);
 }

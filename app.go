@@ -114,22 +114,18 @@ func (t *TargetDir) SaveImageData(data string) error {
 	return nil
 }
 
-func (t *TargetDir) RegisterFileDropListener(ctx context.Context) {
-	println("register!")
-	runtime.OnFileDrop(ctx, func(x, y int, paths []string) {
-		println("ondrop!")
-		for _, p := range paths {
-			if hasImageExt(p) {
-				err := t.DropFile(p)
-				if err != nil {
-					println("DropFile Error:", err)
-					return
-				}
-				// notify update.
+func (t *TargetDir) OnDropFiles(paths []string) {
+	println("ondrop!")
+	for _, p := range paths {
+		if hasImageExt(p) {
+			err := t.DropFile(p)
+			if err != nil {
+				println("DropFile Error:", err)
+				return
 			}
+			// notify update.
 		}
-		runtime.EventsEmit(ctx, "image-list-update")
-	})
+	}
 }
 
 type TargetDirLoader struct {
@@ -164,11 +160,18 @@ func NewApp(td *TargetDir) *App {
 	return &App{targetDir: td}
 }
 
+func (a *App) NotifyUpdateImageList() {
+	runtime.EventsEmit(a.ctx, "image-list-update")
+}
+
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	a.targetDir.RegisterFileDropListener(ctx)
+	runtime.OnFileDrop(ctx, func(x, y int, paths []string) {
+		a.targetDir.OnDropFiles(paths)
+		a.NotifyUpdateImageList()
+	})
 }
 
 func (a *App) ListFiles() []string {
@@ -181,8 +184,7 @@ func (a *App) CopyUrl(fname string) {
 }
 
 func (a *App) SaveImage(data string) {
-	println("save image called")
 	a.targetDir.SaveImageData(data)
 
-	runtime.EventsEmit(a.ctx, "image-list-update")
+	a.NotifyUpdateImageList()
 }
