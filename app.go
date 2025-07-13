@@ -59,74 +59,76 @@ func (t *TargetDir) ListFiles() []string {
 	return result
 }
 
-func (t *TargetDir) NewFilePath() string {
+func (t *TargetDir) NewFilePath() (string, string) {
 	now := time.Now()
 
 	fname := now.Format("2006_0102_150405") + ".png"
 
-	return filepath.Join(t.targetDir, fname)
+	return fname, filepath.Join(t.targetDir, fname)
 }
 
-func (t *TargetDir) DropFile(srcPath string) error {
-	destPath := t.NewFilePath()
+func (t *TargetDir) DropFile(srcPath string) (string, error) {
+	fname, destPath := t.NewFilePath()
 
 	srcFile, err := os.Open(srcPath)
 	if err != nil {
-		return fmt.Errorf("failed to create src file: %s, %w", srcPath, err)
+		return "", fmt.Errorf("failed to create src file: %s, %w", srcPath, err)
 	}
 
 	defer srcFile.Close()
 
 	destFile, err := os.Create(destPath)
 	if err != nil {
-		return fmt.Errorf("failed to create dest file: %s, %w", destPath, err)
+		return "", fmt.Errorf("failed to create dest file: %s, %w", destPath, err)
 	}
 
 	defer destFile.Close()
 
 	_, err = io.Copy(destFile, srcFile)
 	if err != nil {
-		return fmt.Errorf("failed to copy file: %w", err)
+		return "", fmt.Errorf("failed to copy file: %w", err)
 	}
-	return nil
+	return fname, nil
 }
 
-func (t *TargetDir) SaveImageData(data string) error {
-	destPath := t.NewFilePath()
+func (t *TargetDir) SaveImageData(data string) (string, error) {
+	fname, destPath := t.NewFilePath()
 
 	parts := strings.SplitN(data, ",", 2)
 	if len(parts) != 2 {
-		return fmt.Errorf("invalid base64 data url")
+		return "", fmt.Errorf("invalid base64 data url")
 	}
 	base64Data := parts[1]
 
 	decodedImage, err := base64.StdEncoding.DecodeString(base64Data)
 	if err != nil {
-		return fmt.Errorf("fail to decode base64: %w", err)
+		return "", fmt.Errorf("fail to decode base64: %w", err)
 	}
 
 	err = os.WriteFile(destPath, decodedImage, 0644)
 	if err != nil {
-		return fmt.Errorf("fail to save: %w", err)
+		return "", fmt.Errorf("fail to save: %w", err)
 	}
 
 	fmt.Printf("Saved: %s, bytesize: %d.", destPath, len(decodedImage))
 
-	return nil
+	return fname, nil
 }
 
-func (t *TargetDir) OnDropFiles(paths []string) {
-	println("ondrop!")
+// return last fname
+func (t *TargetDir) OnDropFiles(paths []string) string {
+	lastFname := ""
 	for _, p := range paths {
 		if hasImageExt(p) {
-			err := t.DropFile(p)
+			fname, err := t.DropFile(p)
 			if err != nil {
 				println("DropFile Error:", err)
-				return
+				return ""
 			}
-			// notify update.
+			lastFname = fname
 		}
 	}
+	return lastFname
 }
 
 type TargetDirLoader struct {
@@ -170,8 +172,11 @@ func (a *App) NotifyUpdateImageList() {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	runtime.OnFileDrop(ctx, func(x, y int, paths []string) {
-		a.targetDir.OnDropFiles(paths)
+		last := a.targetDir.OnDropFiles(paths)
 		a.NotifyUpdateImageList()
+		if last != "" {
+			a.CopyUrl(last)
+		}
 	})
 }
 
@@ -185,7 +190,9 @@ func (a *App) CopyUrl(fname string) {
 }
 
 func (a *App) SaveImage(data string) {
-	a.targetDir.SaveImageData(data)
-
-	a.NotifyUpdateImageList()
+	fname, err := a.targetDir.SaveImageData(data)
+	if err == nil {
+		a.CopyUrl(fname)
+		a.NotifyUpdateImageList()
+	}
 }
