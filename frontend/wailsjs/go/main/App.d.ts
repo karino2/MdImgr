@@ -10,3 +10,7 @@ export function ListFiles():Promise<Array<string>>;
 export function NotifyUpdateImageList():Promise<void>;
 
 export function SaveImage(arg1:string):Promise<void>;
+
+export function SelectDir():Promise<string>;
+
+export function SetTargetDir(arg1:string):Promise<void>;

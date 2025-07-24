@@ -21,3 +21,11 @@ export function NotifyUpdateImageList() {
 export function SaveImage(arg1) {
   return window['go']['main']['App']['SaveImage'](arg1);
 }
+
+export function SelectDir() {
+  return window['go']['main']['App']['SelectDir']();
+}
+
+export function SetTargetDir(arg1) {
+  return window['go']['main']['App']['SetTargetDir'](arg1);
+}

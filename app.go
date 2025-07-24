@@ -15,9 +15,6 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-// const iniDir = "/Users/arinokazuma/work/GitHub/MdImgr/tests"
-// const iniDir = "/Users/arinokazuma/work/GitHub/karino2.github.io/assets/images/MLAA"
-const iniDir = "/Users/arinokazuma/work/GitHub/karino2.github.io/assets/images/MFG_BasicShape"
 const template = `![images/MFG_BasicShape/$1]({{"/assets/images/MFG_BasicShape/$1" | absolute_url}})`
 
 type TargetDir struct {
@@ -25,8 +22,13 @@ type TargetDir struct {
 }
 
 func NewTargetDir() *TargetDir {
-	return &TargetDir{targetDir: iniDir}
+	return &TargetDir{targetDir: ""}
 }
+
+func (t *TargetDir) SetTargetDir(path string) {
+	t.targetDir = path
+}
+
 
 func (t *TargetDir) ReadFile(fname string) ([]byte, error) {
 	requestedPath := path.Join(t.targetDir, fname)
@@ -215,6 +217,20 @@ func (a *App) DeleteFile(fname string) {
 	}
 	a.NotifyUpdateImageList()
 	runtime.EventsEmit(a.ctx, "show-toast", "Move file to trash dir.")
+}
+
+func (a *App) SelectDir() string {
+	dir, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{})
+	if err != nil {
+		println("Error selecting directory:", err)
+		return ""
+	}
+	return dir
+}
+
+func (a *App) SetTargetDir(path string) {
+	a.targetDir.SetTargetDir(path)
+	a.NotifyUpdateImageList()
 }
 
 func (a *App) SaveImage(data string) {

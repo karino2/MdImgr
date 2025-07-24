@@ -1,7 +1,24 @@
 import './style.css';
-import {ListFiles, CopyUrl, SaveImage, DeleteFile} from '../wailsjs/go/main/App';
+import {ListFiles, CopyUrl, SaveImage, DeleteFile, SelectDir, SetTargetDir} from '../wailsjs/go/main/App';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
+
+const TARGET_DIR_KEY = 'targetDir';
+
+document.getElementById('select-dir-button').addEventListener('click', async () => {
+    const dir = await SelectDir();
+    if (dir) {
+        localStorage.setItem(TARGET_DIR_KEY, dir);
+        await SetTargetDir(dir);
+    }
+});
+
+async function initializeApp() {
+    const storedDir = localStorage.getItem(TARGET_DIR_KEY);
+    if (storedDir) {
+        await SetTargetDir(storedDir);
+    }
+}
 
 /**
  * 
@@ -80,5 +97,6 @@ document.addEventListener('paste', async (event) => {
 
 
 
+initializeApp()
 updateImageList()
 
