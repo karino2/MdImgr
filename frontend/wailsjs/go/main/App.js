@@ -29,3 +29,7 @@ export function SelectDir() {
 export function SetTargetDir(arg1) {
   return window['go']['main']['App']['SetTargetDir'](arg1);
 }
+
+export function SetTemplate(arg1) {
+  return window['go']['main']['App']['SetTemplate'](arg1);
+}

@@ -15,7 +15,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-const template = `![images/MFG_BasicShape/$1]({{"/assets/images/MFG_BasicShape/$1" | absolute_url}})`
+
 
 type TargetDir struct {
 	targetDir string
@@ -175,10 +175,15 @@ func (h *TargetDirLoader) ServeHTTP(res http.ResponseWriter, req *http.Request) 
 type App struct {
 	ctx       context.Context
 	targetDir *TargetDir
+	template  string
 }
 
 func NewApp(td *TargetDir) *App {
 	return &App{targetDir: td}
+}
+
+func (a *App) SetTemplate(template string) {
+	a.template = template
 }
 
 func (a *App) NotifyUpdateImageList() {
@@ -203,7 +208,11 @@ func (a *App) ListFiles() []string {
 }
 
 func (a *App) CopyUrl(fname string) {
-	txt := strings.ReplaceAll(template, "$1", fname)
+	if a.template == "" {
+		runtime.EventsEmit(a.ctx, "show-toast", "Template is not set.")
+		return
+	}
+	txt := strings.ReplaceAll(a.template, "$1", fname)
 	runtime.ClipboardSetText(a.ctx, txt)
 	runtime.EventsEmit(a.ctx, "show-toast", "Url copied.")
 }

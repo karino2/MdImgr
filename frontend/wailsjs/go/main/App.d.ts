@@ -14,3 +14,5 @@ export function SaveImage(arg1:string):Promise<void>;
 export function SelectDir():Promise<string>;
 
 export function SetTargetDir(arg1:string):Promise<void>;
+
+export function SetTemplate(arg1:string):Promise<void>;
