@@ -59,12 +59,14 @@ func (t *TargetDir) ListFiles() []string {
 	return result
 }
 
+func (t *TargetDir) toPath(fname string) string { return filepath.Join(t.targetDir, fname) }
+
 func (t *TargetDir) NewFilePath() (string, string) {
 	now := time.Now()
 
 	fname := now.Format("2006_0102_150405") + ".png"
 
-	return fname, filepath.Join(t.targetDir, fname)
+	return fname, t.toPath(fname)
 }
 
 func (t *TargetDir) DropFile(srcPath string) (string, error) {
@@ -131,6 +133,19 @@ func (t *TargetDir) OnDropFiles(paths []string) string {
 	return lastFname
 }
 
+func (t *TargetDir) DeleteFile(fname string) error {
+	path := t.toPath(fname)
+	trashDir := t.toPath("Trash")
+
+	err := os.MkdirAll(trashDir, 0755)
+	if err != nil {
+		return err
+	}
+
+	destPath := filepath.Join(trashDir, fname)
+	return os.Rename(path, destPath)
+}
+
 type TargetDirLoader struct {
 	http.Handler
 	targetDir *TargetDir
@@ -188,6 +203,17 @@ func (a *App) CopyUrl(fname string) {
 	txt := strings.ReplaceAll(template, "$1", fname)
 	runtime.ClipboardSetText(a.ctx, txt)
 	runtime.EventsEmit(a.ctx, "show-toast", "Url copied.")
+}
+
+func (a *App) DeleteFile(fname string) {
+	err := a.targetDir.DeleteFile(fname)
+	if err != nil {
+		msg := fmt.Sprintf("Delete fail: %v", err)
+		runtime.EventsEmit(a.ctx, "show-toast", msg)
+		return
+	}
+	a.NotifyUpdateImageList()
+	runtime.EventsEmit(a.ctx, "show-toast", "Move file to trash dir.")
 }
 
 func (a *App) SaveImage(data string) {

@@ -1,5 +1,5 @@
 import './style.css';
-import {ListFiles, CopyUrl, SaveImage} from '../wailsjs/go/main/App';
+import {ListFiles, CopyUrl, SaveImage, DeleteFile} from '../wailsjs/go/main/App';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 
@@ -16,7 +16,7 @@ function buildHtml(files) {
         build.push(`</div>`)
         build.push(`<div class="button-area">`)
         build.push(`<button onclick="copyUrl('${f}')"><img src="/src/assets/copy.svg">copy url</button>`)
-        build.push(`<button><img src="/src/assets/delete.svg">delete</button>`)
+        build.push(`<button onclick="deleteFile('${f}')"><img src="/src/assets/delete.svg">delete</button>`)
         build.push("</div>")
         build.push("</div>")
     }
@@ -32,6 +32,11 @@ async function updateImageList() {
 window.copyUrl = (fname) => {
     CopyUrl(fname)
 }
+
+window.deleteFile = (fname) => {
+    DeleteFile(fname)
+}
+
 
 runtime.EventsOn("image-list-update", async () => {
     await updateImageList()
@@ -66,7 +71,6 @@ document.addEventListener('paste', async (event) => {
                 reader.onload = async (e) => {
                     const imageDataUrl = e.target.result
                     await SaveImage(imageDataUrl)
-                    showToast("Url copied")
                 };
                 reader.readAsDataURL(blob)
             }

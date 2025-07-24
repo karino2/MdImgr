@@ -6,6 +6,10 @@ export function CopyUrl(arg1) {
   return window['go']['main']['App']['CopyUrl'](arg1);
 }
 
+export function DeleteFile(arg1) {
+  return window['go']['main']['App']['DeleteFile'](arg1);
+}
+
 export function ListFiles() {
   return window['go']['main']['App']['ListFiles']();
 }
