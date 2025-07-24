@@ -3,45 +3,45 @@ import {ListFiles, CopyUrl, SaveImage, DeleteFile, SelectDir, SetTargetDir, SetT
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 
-const TARGET_DIR_KEY = 'targetDir';
-const TEMPLATE_KEY = 'template';
-const INITIAL_TEMPLATE = '![images/SomeDir/$1]("images/SomeDir/$1")';
+const TARGET_DIR_KEY = 'targetDir'
+const TEMPLATE_KEY = 'template'
+const INITIAL_TEMPLATE = '![images/SomeDir/$1]("images/SomeDir/$1")'
 
-const templateInput = document.getElementById('template-input');
+const templateInput = document.getElementById('template-input')
 
 document.getElementById('select-dir-button').addEventListener('click', async () => {
-    const dir = await SelectDir();
+    const dir = await SelectDir()
     if (dir) {
-        localStorage.setItem(TARGET_DIR_KEY, dir);
-        await SetTargetDir(dir);
+        localStorage.setItem(TARGET_DIR_KEY, dir)
+        await SetTargetDir(dir)
     }
-});
+})
 
 templateInput.addEventListener('input', async (event) => {
-    const template = event.target.value;
-    localStorage.setItem(TEMPLATE_KEY, template);
-    await SetTemplate(template);
+    const template = event.target.value
+    localStorage.setItem(TEMPLATE_KEY, template)
+    await SetTemplate(template)
 });
 
 document.getElementById('reset-template-button').addEventListener('click', async () => {
-    templateInput.value = INITIAL_TEMPLATE;
-    localStorage.setItem(TEMPLATE_KEY, INITIAL_TEMPLATE);
-    await SetTemplate(INITIAL_TEMPLATE);
+    templateInput.value = INITIAL_TEMPLATE
+    localStorage.setItem(TEMPLATE_KEY, INITIAL_TEMPLATE)
+    await SetTemplate(INITIAL_TEMPLATE)
 });
 
 async function initializeApp() {
-    const storedDir = localStorage.getItem(TARGET_DIR_KEY);
+    const storedDir = localStorage.getItem(TARGET_DIR_KEY)
     if (storedDir) {
-        await SetTargetDir(storedDir);
+        await SetTargetDir(storedDir)
     }
 
-    let template = localStorage.getItem(TEMPLATE_KEY);
+    let template = localStorage.getItem(TEMPLATE_KEY)
     if (template === null) {
-        template = INITIAL_TEMPLATE;
-        localStorage.setItem(TEMPLATE_KEY, template);
+        template = INITIAL_TEMPLATE
+        localStorage.setItem(TEMPLATE_KEY, template)
     }
-    templateInput.value = template;
-    await SetTemplate(template);
+    templateInput.value = template
+    await SetTemplate(template)
 }
 
 /**
@@ -108,7 +108,7 @@ document.addEventListener('paste', async (event) => {
             const blob = item.getAsFile();
 
             if (blob) {
-                const reader = new FileReader();
+                const reader = new FileReader()
                 reader.onload = async (e) => {
                     const imageDataUrl = e.target.result
                     await SaveImage(imageDataUrl)
