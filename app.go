@@ -16,8 +16,9 @@ import (
 )
 
 // const iniDir = "/Users/arinokazuma/work/GitHub/MdImgr/tests"
-const iniDir = "/Users/arinokazuma/work/GitHub/karino2.github.io/assets/images/MLAA"
-const template = `![images/MLAA/$1]({{"/assets/images/MLAA/$1" | absolute_url}})`
+// const iniDir = "/Users/arinokazuma/work/GitHub/karino2.github.io/assets/images/MLAA"
+const iniDir = "/Users/arinokazuma/work/GitHub/karino2.github.io/assets/images/MFG_BasicShape"
+const template = `![images/MFG_BasicShape/$1]({{"/assets/images/MFG_BasicShape/$1" | absolute_url}})`
 
 type TargetDir struct {
 	targetDir string
