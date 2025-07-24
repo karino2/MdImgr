@@ -15,8 +15,8 @@ function buildHtml(files) {
         build.push(`<img src="${f}" class="img-target">`)
         build.push(`</div>`)
         build.push(`<div class="button-area">`)
-        build.push(`<button onclick="copyUrl('${f}')">url</button>`)
-        build.push(`<button>delete</button>`)
+        build.push(`<button onclick="copyUrl('${f}')"><img src="/src/assets/copy.svg">copy url</button>`)
+        build.push(`<button><img src="/src/assets/delete.svg">delete</button>`)
         build.push("</div>")
         build.push("</div>")
     }

@@ -176,8 +176,6 @@ func (a *App) startup(ctx context.Context) {
 		a.NotifyUpdateImageList()
 		if last != "" {
 			a.CopyUrl(last)
-			runtime.EventsEmit(a.ctx, "show-toast", "Url copied.")
-
 		}
 	})
 }
@@ -189,6 +187,7 @@ func (a *App) ListFiles() []string {
 func (a *App) CopyUrl(fname string) {
 	txt := strings.ReplaceAll(template, "$1", fname)
 	runtime.ClipboardSetText(a.ctx, txt)
+	runtime.EventsEmit(a.ctx, "show-toast", "Url copied.")
 }
 
 func (a *App) SaveImage(data string) {
