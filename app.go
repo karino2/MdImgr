@@ -9,13 +9,12 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
-
-
 
 type TargetDir struct {
 	targetDir string
@@ -28,7 +27,6 @@ func NewTargetDir() *TargetDir {
 func (t *TargetDir) SetTargetDir(path string) {
 	t.targetDir = path
 }
-
 
 func (t *TargetDir) ReadFile(fname string) ([]byte, error) {
 	requestedPath := path.Join(t.targetDir, fname)
@@ -59,6 +57,9 @@ func (t *TargetDir) ListFiles() []string {
 			}
 		}
 	}
+	sort.Slice(result, func(i, j int) bool {
+		return result[i] > result[j]
+	})
 	return result
 }
 
