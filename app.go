@@ -34,8 +34,9 @@ func (t *TargetDir) ReadFile(fname string) ([]byte, error) {
 }
 
 func hasImageExt(fname string) bool {
-	// only support png for a while.
-	return filepath.Ext(fname) == ".png"
+	ext := filepath.Ext(fname)
+	// support png or gif(for animation)
+	return ext == ".png" || ext == ".gif"
 }
 
 /*
@@ -65,16 +66,21 @@ func (t *TargetDir) ListFiles() []string {
 
 func (t *TargetDir) toPath(fname string) string { return filepath.Join(t.targetDir, fname) }
 
-func (t *TargetDir) NewFilePath() (string, string) {
+func (t *TargetDir) NewFilePathWithExt(ext string) (string, string) {
 	now := time.Now()
 
-	fname := now.Format("2006_0102_150405") + ".png"
+	fname := now.Format("2006_0102_150405") + ext
 
 	return fname, t.toPath(fname)
 }
 
+func (t *TargetDir) NewFilePath() (string, string) {
+	return t.NewFilePathWithExt(".png")
+}
+
 func (t *TargetDir) DropFile(srcPath string) (string, error) {
-	fname, destPath := t.NewFilePath()
+	ext := filepath.Ext(srcPath)
+	fname, destPath := t.NewFilePathWithExt(ext)
 
 	srcFile, err := os.Open(srcPath)
 	if err != nil {
