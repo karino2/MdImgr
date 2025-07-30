@@ -2,6 +2,8 @@ import './style.css';
 import {ListFiles, CopyUrl, SaveImage, DeleteFile, SelectDir, SetTargetDir, SetTemplate} from '../wailsjs/go/main/App';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
+import copyIcon from './assets/copy.svg'
+import deleteIcon from './assets/delete.svg'
 
 const TARGET_DIR_KEY = 'targetDir'
 const TEMPLATE_KEY = 'template'
@@ -56,8 +58,8 @@ function buildHtml(files) {
         build.push(`<img src="${f}" class="img-target">`)
         build.push(`</div>`)
         build.push(`<div class="button-area">`)
-        build.push(`<button onclick="copyUrl('${f}')"><img src="/src/assets/copy.svg">copy url</button>`)
-        build.push(`<button onclick="deleteFile('${f}')"><img src="/src/assets/delete.svg">delete</button>`)
+        build.push(`<button onclick="copyUrl('${f}')"><img src="${copyIcon}">copy url</button>`)
+        build.push(`<button onclick="deleteFile('${f}')"><img src="${deleteIcon}">delete</button>`)
         build.push("</div>")
         build.push("</div>")
     }
