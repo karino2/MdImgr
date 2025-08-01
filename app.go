@@ -244,6 +244,13 @@ func (a *App) SelectDir() string {
 	return dir
 }
 
+func (a *App) SelectDirAndNotify() {
+	dir := a.SelectDir()
+	if dir != "" {
+		runtime.EventsEmit(a.ctx, "set-new-dir", dir)
+	}
+}
+
 func (a *App) SetTargetDir(path string) {
 	a.targetDir.SetTargetDir(path)
 	a.NotifyUpdateImageList()

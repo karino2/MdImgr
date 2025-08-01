@@ -26,6 +26,10 @@ export function SelectDir() {
   return window['go']['main']['App']['SelectDir']();
 }
 
+export function SelectDirAndNotify() {
+  return window['go']['main']['App']['SelectDirAndNotify']();
+}
+
 export function SetTargetDir(arg1) {
   return window['go']['main']['App']['SetTargetDir'](arg1);
 }

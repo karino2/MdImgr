@@ -1,5 +1,5 @@
 import './style.css';
-import {ListFiles, CopyUrl, SaveImage, DeleteFile, SelectDir, SetTargetDir, SetTemplate} from '../wailsjs/go/main/App';
+import {ListFiles, CopyUrl, SaveImage, DeleteFile, SelectDirAndNotify, SetTargetDir, SetTemplate} from '../wailsjs/go/main/App';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 import copyIcon from './assets/copy.svg'
@@ -10,14 +10,6 @@ const TEMPLATE_KEY = 'template'
 const INITIAL_TEMPLATE = '![images/SomeDir/$1]("images/SomeDir/$1")'
 
 const templateInput = document.getElementById('template-input')
-
-document.getElementById('select-dir-button').addEventListener('click', async () => {
-    const dir = await SelectDir()
-    if (dir) {
-        localStorage.setItem(TARGET_DIR_KEY, dir)
-        await SetTargetDir(dir)
-    }
-})
 
 templateInput.addEventListener('input', async (event) => {
     const template = event.target.value
@@ -32,11 +24,6 @@ document.getElementById('reset-template-button').addEventListener('click', async
 });
 
 async function initializeApp() {
-    const storedDir = localStorage.getItem(TARGET_DIR_KEY)
-    if (storedDir) {
-        await SetTargetDir(storedDir)
-    }
-
     let template = localStorage.getItem(TEMPLATE_KEY)
     if (template === null) {
         template = INITIAL_TEMPLATE
@@ -44,6 +31,15 @@ async function initializeApp() {
     }
     templateInput.value = template
     await SetTemplate(template)
+
+    const storedDir = localStorage.getItem(TARGET_DIR_KEY)
+    if (storedDir === null) {
+        showToast("Please select target dir")
+        await SelectDirAndNotify()
+    } else {
+        await SetTargetDir(storedDir)
+    }
+
 }
 
 /**
@@ -95,7 +91,16 @@ runtime.EventsOn("show-toast", (msg) => {
     showToast(msg)
 })
 
+async function setNewDir(dir) {
+    if (dir) {
+        localStorage.setItem(TARGET_DIR_KEY, dir)
+        await SetTargetDir(dir)
+    }
+}
 
+runtime.EventsOn("set-new-dir", (dir) => {
+    setNewDir(dir)
+})
 
 document.addEventListener('paste', async (event) => {
     console.log("paste called")
