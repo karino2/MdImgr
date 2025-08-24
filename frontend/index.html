@@ -9,6 +9,13 @@
 <div>
     <input type="text" id="template-input" size="100">
     <button id="reset-template-button">Reset Template</button>
+    <button id="history-button">History</button>
+</div>
+<div id="history-dialog" style="display:none; position:absolute; border:1px solid #ccc; background-color:#fff; padding:10px;">
+    <label for="history-dialog-select">RecentDirs:</label>
+    <select id="history-dialog-select"></select>
+    <button id="history-dialog-ok-button">Select</button>
+    <button id="history-dialog-cancel-button">Cancel</button>
 </div>
 <div id="img-list"></div>
 <div>DnD image file or paste clip board image via C-v.</div>
