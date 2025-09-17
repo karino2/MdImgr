@@ -27,13 +27,6 @@ async function SetNewTemplate(template) {
 }
 
 
-document.getElementById('reset-template-button').addEventListener('click', async () => {
-    await SetNewTemplate(INITIAL_TEMPLATE)
-    maySaveHistory({dir: localStorage.getItem(TARGET_DIR_KEY), template: templateInput.value})
-});
-
-
-
 /**
  * @typedef HistoryItem
  * @type {object}
