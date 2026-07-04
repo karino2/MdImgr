@@ -5,6 +5,10 @@ export function CopyUrl(arg1:string):Promise<void>;
 
 export function DeleteFile(arg1:string):Promise<void>;
 
+export function GetTargetDir():Promise<string>;
+
+export function GetTemplate():Promise<string>;
+
 export function ListFiles():Promise<Array<string>>;
 
 export function NotifyUpdateImageList():Promise<void>;

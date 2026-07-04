@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"os"
 	"runtime"
 
 	"github.com/wailsapp/wails/v2"
@@ -14,9 +15,25 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
+/*
+MdImgr.app [targetDir] [template]
+*/
 func main() {
-	targetDir := NewTargetDir()
-	app := NewApp(targetDir)
+	targetDirName := ""
+	template := ""
+
+	if len(os.Args) > 1 {
+		targetDirName = os.Args[1]
+	}
+	if len(os.Args) > 2 {
+		template = os.Args[2]
+	}
+
+	println("targetDir:", targetDirName)
+	println("template:", template)
+
+	targetDir := &TargetDir{targetDir: targetDirName}
+	app := NewApp(targetDir, template)
 
 	AppMenu := menu.NewMenu()
 	if runtime.GOOS == "darwin" {

@@ -3,3 +3,4 @@ node_modules
 frontend/dist
 build/darwin
 *.lock
+build/.DS_Store

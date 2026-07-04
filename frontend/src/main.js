@@ -1,5 +1,5 @@
 import './style.css';
-import {ListFiles, CopyUrl, SaveImage, DeleteFile, SelectDirAndNotify, SetTargetDir, SetTemplate} from '../wailsjs/go/main/App';
+import {ListFiles, CopyUrl, SaveImage, DeleteFile, SelectDirAndNotify, SetTargetDir, GetTargetDir, SetTemplate, GetTemplate} from '../wailsjs/go/main/App';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 import copyIcon from './assets/copy.svg'
@@ -156,25 +156,32 @@ document.getElementById('history-dialog-ok-button').addEventListener('click', as
 
 
 async function initializeApp() {
-    let template = localStorage.getItem(TEMPLATE_KEY)
-    if (template === null) {
-        template = INITIAL_TEMPLATE
-        localStorage.setItem(TEMPLATE_KEY, template)
+    let template = await GetTemplate()
+    let targetDir = await GetTargetDir()
+
+    if (template === "") {
+        template = localStorage.getItem(TEMPLATE_KEY)
+        if (template === null) {
+            template = INITIAL_TEMPLATE
+            localStorage.setItem(TEMPLATE_KEY, template)
+        }
+        await SetTemplate(template)
     }
     templateInput.value = template
-    await SetTemplate(template)
 
     g_historyList = loadHistory()
 
-    const storedDir = localStorage.getItem(TARGET_DIR_KEY)
-    if (storedDir === null) {
-        showToast("Please select target dir")
-        await SelectDirAndNotify()
-    } else {
-        g_lastHistoryItem = {dir: storedDir, template: template}
-        await SetTargetDir(storedDir)
+    if (targetDir === "") {
+        targetDir = localStorage.getItem(TARGET_DIR_KEY)
+        if (targetDir === null) {
+            showToast("Please select target dir")
+            await SelectDirAndNotify()
+            return
+        } 
     }
 
+    g_lastHistoryItem = {dir: targetDir, template: template}
+    await SetTargetDir(targetDir)
 }
 
 /**

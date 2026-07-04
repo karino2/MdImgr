@@ -20,10 +20,6 @@ type TargetDir struct {
 	targetDir string
 }
 
-func NewTargetDir() *TargetDir {
-	return &TargetDir{targetDir: ""}
-}
-
 func (t *TargetDir) SetTargetDir(path string) {
 	t.targetDir = path
 }
@@ -185,12 +181,16 @@ type App struct {
 	template  string
 }
 
-func NewApp(td *TargetDir) *App {
-	return &App{targetDir: td}
+func NewApp(td *TargetDir, template string) *App {
+	return &App{targetDir: td, template: template}
 }
 
 func (a *App) SetTemplate(template string) {
 	a.template = template
+}
+
+func (a *App) GetTemplate() string {
+	return a.template
 }
 
 func (a *App) NotifyUpdateImageList() {
@@ -254,6 +254,10 @@ func (a *App) SelectDirAndNotify() {
 func (a *App) SetTargetDir(path string) {
 	a.targetDir.SetTargetDir(path)
 	a.NotifyUpdateImageList()
+}
+
+func (a *App) GetTargetDir() string {
+	return a.targetDir.targetDir
 }
 
 func (a *App) SaveImage(data string) {

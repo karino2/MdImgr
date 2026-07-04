@@ -10,6 +10,14 @@ export function DeleteFile(arg1) {
   return window['go']['main']['App']['DeleteFile'](arg1);
 }
 
+export function GetTargetDir() {
+  return window['go']['main']['App']['GetTargetDir']();
+}
+
+export function GetTemplate() {
+  return window['go']['main']['App']['GetTemplate']();
+}
+
 export function ListFiles() {
   return window['go']['main']['App']['ListFiles']();
 }
