@@ -224,6 +224,20 @@ func (a *App) CopyUrl(fname string) {
 	runtime.EventsEmit(a.ctx, "show-toast", "Url copied.")
 }
 
+func (a *App) CopyAllUrls() {
+	if a.template == "" {
+		runtime.EventsEmit(a.ctx, "show-toast", "Template is not set.")
+		return
+	}
+	var urls []string
+	for _, fname := range a.ListFiles() {
+		txt := strings.ReplaceAll(a.template, "$1", fname)
+		urls = append(urls, txt)
+	}
+	runtime.ClipboardSetText(a.ctx, strings.Join(urls, "\n"))
+	runtime.EventsEmit(a.ctx, "show-toast", "All URLs copied.")
+}
+
 func (a *App) DeleteFile(fname string) {
 	err := a.targetDir.DeleteFile(fname)
 	if err != nil {

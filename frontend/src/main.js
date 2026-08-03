@@ -1,5 +1,5 @@
 import './style.css';
-import {ListFiles, CopyUrl, SaveImage, DeleteFile, SelectDirAndNotify, SetTargetDir, GetTargetDir, SetTemplate, GetTemplate} from '../wailsjs/go/main/App';
+import {ListFiles, CopyUrl, CopyAllUrls, SaveImage, DeleteFile, SelectDirAndNotify, SetTargetDir, GetTargetDir, SetTemplate, GetTemplate} from '../wailsjs/go/main/App';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 import copyIcon from './assets/copy.svg'
@@ -209,6 +209,10 @@ async function updateImageList() {
     let files = await ListFiles()
     imgListDiv.innerHTML = buildHtml(files)
 }
+
+document.getElementById('copy-all-button').addEventListener('click', async () => {
+    await CopyAllUrls()
+})
 
 window.copyUrl = (fname) => {
     CopyUrl(fname)
