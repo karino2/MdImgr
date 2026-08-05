@@ -158,6 +158,7 @@ document.getElementById('history-dialog-ok-button').addEventListener('click', as
 async function initializeApp() {
     let template = await GetTemplate()
     let targetDir = await GetTargetDir()
+    let byLaunchArg = template !== "" || targetDir !== "";
 
     if (template === "") {
         template = localStorage.getItem(TEMPLATE_KEY)
@@ -179,8 +180,12 @@ async function initializeApp() {
             return
         } 
     }
+    if (byLaunchArg) {
+        maySaveHistory({dir: targetDir, template: template})
+    } else {
+        g_lastHistoryItem = {dir: targetDir, template: template}
+    }
 
-    g_lastHistoryItem = {dir: targetDir, template: template}
     await SetTargetDir(targetDir)
 }
 
