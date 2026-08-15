@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -230,7 +231,7 @@ func (a *App) CopyAllUrls() {
 		return
 	}
 	var urls []string
-	for _, fname := range a.ListFiles() {
+	for _, fname := range slices.Backward(a.ListFiles()) {
 		txt := strings.ReplaceAll(a.template, "$1", fname)
 		urls = append(urls, txt)
 	}
